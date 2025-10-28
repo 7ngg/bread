@@ -1,5 +1,5 @@
 @base=http://localhost:42069
 
 ### Test GET request
-GET {{base}}
+GET {{base}}/products
 

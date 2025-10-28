@@ -1,0 +1,3 @@
+environment: "local"
+port: 42069
+db_path: "db.sqlite"
