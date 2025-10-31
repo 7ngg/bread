@@ -23,7 +23,7 @@ func New(pg IProductsGetter) *ProductService {
 	}
 }
 
-func (ps *ProductService) GetAllProducts(context context.Context, page, pageSize int64) (lib.PaginatedList[db.Product], error) {
+func (ps *ProductService) GetAllProducts(context context.Context, page, pageSize int32) (lib.PaginatedList[db.Product], error) {
 	params := db.GetProductsParams{Limit: pageSize, Offset: (page - 1) * pageSize}
 	products, err := ps.ProductsGetter.GetProducts(context, params)
 	if err != nil {
@@ -37,7 +37,7 @@ func (ps *ProductService) GetAllProducts(context context.Context, page, pageSize
 
 	response := lib.PaginatedList[db.Product]{
 		Items:      products,
-		TotalPages: int64(math.Ceil(float64(totalItems) / float64(pageSize))),
+		TotalPages: int32(math.Ceil(float64(totalItems) / float64(pageSize))),
 		Page:       page,
 	}
 

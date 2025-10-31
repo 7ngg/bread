@@ -12,12 +12,12 @@ import (
 const getProducts = `-- name: GetProducts :many
 SELECT id, name, price, created_at, updated_at FROM products
 ORDER BY name
-LIMIT ? OFFSET ?
+LIMIT $1 OFFSET $2
 `
 
 type GetProductsParams struct {
-	Limit  int64
-	Offset int64
+	Limit  int32
+	Offset int32
 }
 
 func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Product, error) {

@@ -9,33 +9,33 @@ import (
 )
 
 type Order struct {
-	ID         int64
-	UserID     int64
-	TotalPrice float64
+	ID         int32
+	UserID     int32
+	TotalPrice string
 	CreatedAt  sql.NullTime
 }
 
 type OrderItem struct {
-	ID        int64
-	ProductID int64
-	Quantity  int64
+	ID        int32
+	ProductID int32
+	Quantity  int32
 }
 
 type Product struct {
-	ID        int64
+	ID        int32
 	Name      string
-	Price     float64
+	Price     string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
 
 type ProductItemsOrder struct {
-	OrderItemID int64
-	OrderID     int64
+	OrderItemID int32
+	OrderID     int32
 }
 
 type User struct {
-	ID    int64
+	ID    int32
 	Phone string
 	Name  string
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 type App struct {
@@ -18,7 +18,7 @@ type App struct {
 }
 
 func NewApp(cfg *config.AppConfig) *App {
-	dbConn, err := sql.Open("sqlite3", cfg.DbPath)
+	dbConn, err := sql.Open("postgres", cfg.DbPath)
 	if err != nil {
 		panic("unable to connect to database")
 	}

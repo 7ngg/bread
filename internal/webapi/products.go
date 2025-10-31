@@ -20,7 +20,7 @@ func (app *App) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
 		pageSize = 20
 	}
 
-	products, err := app.productService.GetAllProducts(r.Context(), int64(page), int64(pageSize))
+	products, err := app.productService.GetAllProducts(r.Context(), int32(page), int32(pageSize))
 	if err != nil {
 		lib.ResponseWithJson(w, http.StatusInternalServerError, "unable to retrieve products")
 		return

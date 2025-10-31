@@ -9,7 +9,7 @@ import (
 
 	"github.com/7ngg/bread/internal/config"
 	"github.com/7ngg/bread/internal/webapi"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
 type Templates struct {
