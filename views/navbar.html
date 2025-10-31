@@ -1,0 +1,15 @@
+{{ block "navbar" . }}
+<nav class="navbar">
+  <a href="/">
+    <h1>BREAD</h1>
+  </a>
+  <div class="nav-links">
+    {{ range .Items }}
+    <a href="{{ .Href }}" class="nav-item">{{ .Text }}</a>
+    {{ end }}
+  </div>
+  <div>
+    <a href="/">Orders</a>
+  </div>
+</nav>
+{{ end }}

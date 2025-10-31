@@ -3,9 +3,13 @@
 <html lang="en">
   <head>
     <title>Bread</title>
+    <link rel="stylesheet" href="/static/styles/global.css" />
+    <link rel="stylesheet" href="/static/styles/navbar.css" />
   </head>
   <body>
-    {{ .Port }}
+    <header>
+      {{ block "navbar" . }}{{ end }}
+    </header>
   </body>
 </html>
 {{ end }}
