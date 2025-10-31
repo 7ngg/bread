@@ -12,10 +12,16 @@ import (
 const getProducts = `-- name: GetProducts :many
 SELECT id, name, price, created_at, updated_at FROM products
 ORDER BY name
+LIMIT ? OFFSET ?
 `
 
-func (q *Queries) GetProducts(ctx context.Context) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, getProducts)
+type GetProductsParams struct {
+	Limit  int64
+	Offset int64
+}
+
+func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Product, error) {
+	rows, err := q.db.QueryContext(ctx, getProducts, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -41,4 +47,16 @@ func (q *Queries) GetProducts(ctx context.Context) ([]Product, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const productsCount = `-- name: ProductsCount :one
+SELECT COUNT(id)
+FROM products
+`
+
+func (q *Queries) ProductsCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, productsCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
 }

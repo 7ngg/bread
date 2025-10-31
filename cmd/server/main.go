@@ -8,8 +8,7 @@ import (
 	"net/http"
 
 	"github.com/7ngg/bread/internal/config"
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/7ngg/bread/internal/webapi"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -30,14 +29,7 @@ func NewTemplates() *Templates {
 func main() {
 	cfg := config.MustLoad()
 
-	r := chi.NewRouter()
-
-	r.Use(middleware.Logger)
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		templates := NewTemplates()
-		templates.Render(w, "index", cfg)
-	})
+	r := webapi.NewRouter(cfg)
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), r))
 }
