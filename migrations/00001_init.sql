@@ -12,7 +12,9 @@ CREATE TABLE users (
 CREATE TABLE products (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    ingredients TEXT NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
+    img_url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

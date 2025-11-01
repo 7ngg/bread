@@ -22,11 +22,13 @@ type OrderItem struct {
 }
 
 type Product struct {
-	ID        int32
-	Name      string
-	Price     string
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	ID          int32
+	Name        string
+	Ingredients string
+	Price       string
+	ImgUrl      sql.NullString
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
 }
 
 type ProductItemsOrder struct {

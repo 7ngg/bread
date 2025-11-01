@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"html/template"
 	"io"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/7ngg/bread/internal/config"
+	"github.com/7ngg/bread/internal/db"
 	"github.com/7ngg/bread/internal/webapi"
 	_ "github.com/lib/pq"
 )
@@ -36,11 +38,18 @@ func main() {
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		templates := NewTemplates()
+		conn, _ := sql.Open("postgres", cfg.DbPath)
+		q := db.New(conn)
+		products, _ := q.GetProducts(r.Context(), db.GetProductsParams{
+			Limit:  10,
+			Offset: 0,
+		})
 		opts := struct {
 			Items []struct {
 				Href string
 				Text string
 			}
+			Products []db.Product
 		}{
 			Items: []struct {
 				Href string
@@ -55,6 +64,7 @@ func main() {
 					Text: "Catalog",
 				},
 			},
+			Products: products,
 		}
 		err := templates.Render(w, "index.html", opts)
 		if err != nil {

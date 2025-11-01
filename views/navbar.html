@@ -4,7 +4,7 @@
     <h1>BREAD</h1>
   </a>
   <div class="nav-links">
-    {{ range .Items }}
+    {{ range . }}
     <a href="{{ .Href }}" class="nav-item">{{ .Text }}</a>
     {{ end }}
   </div>

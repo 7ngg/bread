@@ -3,13 +3,20 @@
 <html lang="en">
   <head>
     <title>Bread</title>
-    <link rel="stylesheet" href="/static/styles/global.css" />
-    <link rel="stylesheet" href="/static/styles/navbar.css" />
+    <link rel="stylesheet" href="/static/styles/index.min.css" />
+    <link rel="stylesheet" href="/static/styles/navbar.min.css" />
+    <link rel="stylesheet" href="/static/styles/product-card.min.css" />
   </head>
   <body>
     <header>
-      {{ block "navbar" . }}{{ end }}
+      {{ block "navbar" .Items }}{{ end }}
     </header>
+    <main style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <section class="product-list">
+        {{ range .Products }}
+          {{ block "product-card" . }}{{ end }}
+        {{ end }}
+      </section>
   </body>
 </html>
 {{ end }}

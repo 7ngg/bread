@@ -10,7 +10,7 @@ import (
 )
 
 const getProducts = `-- name: GetProducts :many
-SELECT id, name, price, created_at, updated_at FROM products
+SELECT id, name, ingredients, price, img_url, created_at, updated_at FROM products
 ORDER BY name
 LIMIT $1 OFFSET $2
 `
@@ -32,7 +32,9 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.Ingredients,
 			&i.Price,
+			&i.ImgUrl,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
