@@ -8,9 +8,17 @@ import (
 )
 
 type AppConfig struct {
-	Environment string `yaml:"environment" env:"ENVIRONMENT" env-required:"true"`
-	Port        int    `yaml:"port" env:"PORT" env-default:"42069"`
-	DbPath      string `yaml:"db_path" env:"DB_PATH"`
+	Environment string      `yaml:"environment" env:"ENVIRONMENT" env-required:"true"`
+	Port        int         `yaml:"port" env:"PORT" env-default:"42069"`
+	DbConn      string      `yaml:"db_path" env:"DB_PATH"`
+	Redis       RedisConfig `yaml:"redis" env-required:"true"`
+}
+
+type RedisConfig struct {
+	Addr     string `yaml:"addr" env:"REDIS__ADDR" env-required:"true"`
+	Password string `yaml:"password" env:"REDIS__PASSWORD"`
+	DB       int    `yaml:"db" env:"REDIS__DB" env-default:"0"`
+	Protocol int    `yaml:"protocol" env:"REDIS__PROTOCOL"`
 }
 
 func MustLoad() *AppConfig {

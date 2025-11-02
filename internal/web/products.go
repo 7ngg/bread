@@ -1,4 +1,4 @@
-package webapi
+package web
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"github.com/7ngg/bread/internal/lib"
 )
 
-func (app *App) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
+func (app *WebApp) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	page, _ := strconv.Atoi(params.Get("page"))
 	pageSize, _ := strconv.Atoi(params.Get("page-size"))

@@ -1,3 +1,8 @@
 environment: "local"
 port: 42069
-db_path: "host=localhost port=5432 user=postgres password=postgres dbname=bread sslmode=disable"
+db_conn: "host=localhost port=5432 user=postgres password=postgres dbname=bread sslmode=disable"
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+  protocol: 2
