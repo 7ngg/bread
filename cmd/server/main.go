@@ -7,7 +7,6 @@ import (
 
 	"github.com/7ngg/bread/internal/cache"
 	"github.com/7ngg/bread/internal/config"
-	"github.com/7ngg/bread/internal/db"
 	"github.com/7ngg/bread/internal/web"
 	_ "github.com/lib/pq"
 )
@@ -18,11 +17,10 @@ func main() {
 	dbConn := initializeDbConnection(cfg.DbConn)
 	defer dbConn.Close()
 
-	queries := db.New(dbConn)
 	redisClient := cache.NewRedisConnection(&cfg.Redis)
 	defer redisClient.Close()
 
-	app := web.NewWebApp(queries, redisClient)
+	app := web.NewWebApp(dbConn, redisClient)
 
 	log.Fatal(app.ListenAndServe(fmt.Sprintf(":%d", cfg.Port)))
 }

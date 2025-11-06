@@ -35,7 +35,6 @@ func (bs *BasketService) AddItemToBasket(context context.Context, sessionID stri
 		return fmt.Errorf("failed to get basket: %w", err)
 	}
 	
-	// Initialize map if needed
 	if basket.Items == nil {
 		basket.Items = make(map[int]int)
 	}

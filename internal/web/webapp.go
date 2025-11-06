@@ -1,6 +1,7 @@
 package web
 
 import (
+	"database/sql"
 	"html/template"
 	"io"
 	"net/http"
@@ -23,20 +24,25 @@ type WebApp struct {
 	basketService  *services.BasketService
 }
 
-func NewWebApp(db *db.Queries, redisClient *redis.Client) *WebApp {
+func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
+	queries := db.New(dbConn)
 	app := &WebApp{
 		templates:      NewTemplates(),
-		db:             db,
+		db:             queries,
 		cache:          redisClient,
 		router:         chi.NewRouter(),
-		productService: services.NewProductService(db),
+		productService: services.NewProductService(queries),
 		basketService:  services.NewBasketService(redisClient),
 	}
+
+	healthHandler := NewHealthHandler(redisClient, dbConn)
 
 	app.router.Use(middleware.Logger)
 
 	// Health check endpoint
-	app.router.Get("/api/_health/alive", alive)
+	app.router.Get("/api/_health", healthHandler.HealthCheck)
+	app.router.Get("/api/_health/ready", healthHandler.Readiness)
+	app.router.Get("/api/_health/alive", healthHandler.Liveness)
 
 	// Products endpoints
 	app.router.Get("/api/products", app.GetAllProductsHandler)
