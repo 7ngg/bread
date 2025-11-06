@@ -17,7 +17,7 @@ type IProductsGetter interface {
 	ProductsCount(context context.Context) (int64, error)
 }
 
-func New(pg IProductsGetter) *ProductService {
+func NewProductService(pg IProductsGetter) *ProductService {
 	return &ProductService{
 		ProductsGetter: pg,
 	}

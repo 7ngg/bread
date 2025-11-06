@@ -9,11 +9,11 @@
   </head>
   <body>
     <header>
-      {{ block "navbar" .Items }}{{ end }}
+      {{ block "navbar" . }}{{ end }}
     </header>
     <main style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <section class="product-list">
-        {{ range .Products }}
+        {{ range .Items }}
           {{ block "product-card" . }}{{ end }}
         {{ end }}
       </section>
