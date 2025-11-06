@@ -20,6 +20,7 @@ func main() {
 
 	queries := db.New(dbConn)
 	redisClient := cache.NewRedisConnection(&cfg.Redis)
+	defer redisClient.Close()
 
 	app := web.NewWebApp(queries, redisClient)
 

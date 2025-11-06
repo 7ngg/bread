@@ -7,8 +7,21 @@
     <a href="/" class="nav-item">Catalog</a>
     <a href="/" class="nav-item">Home</a>
   </div>
-  <div>
-    <a href="/">Orders</a>
+  <div class="members-area" style="display: flex; align-items: center; gap: 10px;">
+    <a href="/" class="nav-item">Orders</a>
+    {{ template "basket" . }}
   </div>
 </nav>
+{{ end }}
+
+{{ block "basket" . }}
+<button class="button-base" hx-post="/basket" hx-swap="outerHTML">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+    class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
+    <circle cx="8" cy="21" r="1" />
+    <circle cx="19" cy="21" r="1" />
+    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+  </svg>
+</button>
 {{ end }}

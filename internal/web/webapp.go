@@ -19,7 +19,8 @@ type WebApp struct {
 	db             *db.Queries
 	cache          *redis.Client
 	router         *chi.Mux
-	productService services.ProductService
+	productService *services.ProductService
+	basketService  *services.BasketService
 }
 
 func NewWebApp(db *db.Queries, redisClient *redis.Client) *WebApp {
@@ -28,7 +29,8 @@ func NewWebApp(db *db.Queries, redisClient *redis.Client) *WebApp {
 		db:             db,
 		cache:          redisClient,
 		router:         chi.NewRouter(),
-		productService: *services.NewProductService(db),
+		productService: services.NewProductService(db),
+		basketService:  services.NewBasketService(redisClient),
 	}
 
 	app.router.Use(middleware.Logger)
@@ -43,6 +45,7 @@ func NewWebApp(db *db.Queries, redisClient *redis.Client) *WebApp {
 	fs := http.FileServer(http.Dir("static"))
 	app.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 	app.router.Get("/", app.RenderIndex)
+	app.router.Post("/basket", app.RenderAddItemToBasket)
 
 	return app
 }
