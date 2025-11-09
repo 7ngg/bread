@@ -56,10 +56,10 @@ func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
 	return app
 }
 
-func (app *WebApp) ListenAndServe(addr string) error {
-	return http.ListenAndServe(addr, app.router)
+func (handler *WebApp) ListenAndServe(addr string) error {
+	return http.ListenAndServe(addr, handler.router)
 }
 
-func (app *WebApp) Render(w io.Writer, name string, data any) error {
-	return app.templates.ExecuteTemplate(w, name, data)
+func (handler *WebApp) Render(w io.Writer, name string, data any) error {
+	return handler.templates.ExecuteTemplate(w, name, data)
 }

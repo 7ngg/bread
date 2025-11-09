@@ -7,7 +7,7 @@ import (
 	"github.com/7ngg/bread/internal/lib"
 )
 
-func (app *WebApp) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
+func (handler *WebApp) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	page, _ := strconv.Atoi(params.Get("page"))
 	pageSize, _ := strconv.Atoi(params.Get("page-size"))
@@ -20,7 +20,7 @@ func (app *WebApp) GetAllProductsHandler(w http.ResponseWriter, r *http.Request)
 		pageSize = 20
 	}
 
-	products, err := app.productService.GetAllProducts(r.Context(), int32(page), int32(pageSize))
+	products, err := handler.productService.GetAllProducts(r.Context(), int32(page), int32(pageSize))
 	if err != nil {
 		lib.ResponseWithJson(w, http.StatusInternalServerError, "unable to retrieve products")
 		return

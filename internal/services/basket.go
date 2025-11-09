@@ -48,3 +48,20 @@ func (bs *BasketService) AddItemToBasket(context context.Context, sessionID stri
 	
 	return bs.client.Set(context, sessionID, jsonData, 24*time.Hour).Err()
 }
+
+func (bs *BasketService) GetBasket(context context.Context, sessionID string) (*Basket, error) {
+	var basket Basket
+	
+	data, err := bs.client.Get(context, sessionID).Bytes()
+	if err == redis.Nil {
+		return &Basket{Items: make(map[int]int)}, nil
+	} else if err != nil {
+		return nil, fmt.Errorf("failed to get basket: %w", err)
+	}
+	
+	if err := json.Unmarshal(data, &basket); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal basket: %w", err)
+	}
+	
+	return &basket, nil
+}

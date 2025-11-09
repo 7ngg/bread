@@ -1,0 +1,16 @@
+.counter {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  padding: 5px;
+  font-family: "Adwaita Mono";
+  transition: all 0.3s ease;
+
+  .counter-item {
+    justify-self: center;
+    align-self: center;
+  }
+}
+
