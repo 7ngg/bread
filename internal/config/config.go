@@ -8,10 +8,11 @@ import (
 )
 
 type AppConfig struct {
-	Environment string      `yaml:"environment" env:"ENVIRONMENT" env-required:"true"`
-	Port        int         `yaml:"port" env:"PORT" env-default:"42069"`
-	DbConn      string      `yaml:"db_conn" env:"DB_CONN"`
-	Redis       RedisConfig `yaml:"redis" env-required:"true"`
+	Environment  string      `yaml:"environment" env:"ENVIRONMENT" env-required:"true"`
+	Port         int         `yaml:"port" env:"PORT" env-default:"42069"`
+	DbConn       string      `yaml:"db_conn" env:"DB_CONN"`
+	FilepathRoot string      `yaml:"filepath_root" env-default:"./"`
+	Redis        RedisConfig `yaml:"redis" env-required:"true"`
 }
 
 type RedisConfig struct {

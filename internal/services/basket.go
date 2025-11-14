@@ -3,8 +3,6 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"fmt"
-	"time"
 
 	"github.com/redis/go-redis/v9"
 )
@@ -23,45 +21,47 @@ type Basket struct {
 	Items map[int]int `json:"items" redis:"items"`
 }
 
-func (bs *BasketService) AddItemToBasket(context context.Context, sessionID string, itemID int) error {
-	var basket Basket
-	
-	data, err := bs.client.Get(context, sessionID).Bytes()
-	if err == nil {
-		if err := json.Unmarshal(data, &basket); err != nil {
-			return fmt.Errorf("failed to unmarshal basket: %w", err)
-		}
-	} else if err != redis.Nil {
-		return fmt.Errorf("failed to get basket: %w", err)
+func (bs *BasketService) AddItemToBasket(ctx context.Context, sessionID string, itemID int) (int, error) {
+	basket, err := bs.GetBasket(ctx, sessionID)	
+	if err == redis.Nil {
+		basket = Basket{ Items: make(map[int]int) }
+	} else if err != nil {
+		return -1, err
 	}
-	
-	if basket.Items == nil {
-		basket.Items = make(map[int]int)
-	}
-	
+
 	basket.Items[itemID]++
-	
-	jsonData, err := json.Marshal(basket)
-	if err != nil {
-		return fmt.Errorf("failed to marshal basket: %w", err)
+
+	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
+		return -1, err
 	}
-	
-	return bs.client.Set(context, sessionID, jsonData, 24*time.Hour).Err()
+
+	return basket.Items[itemID], nil
 }
 
-func (bs *BasketService) GetBasket(context context.Context, sessionID string) (*Basket, error) {
-	var basket Basket
-	
-	data, err := bs.client.Get(context, sessionID).Bytes()
+func (bs *BasketService) RemoveItemToBasket(ctx context.Context, sessionID string, itemID int) (int, error) {
+	basket, err := bs.GetBasket(ctx, sessionID)	
 	if err == redis.Nil {
-		return &Basket{Items: make(map[int]int)}, nil
+		basket = Basket{ Items: make(map[int]int) }
 	} else if err != nil {
-		return nil, fmt.Errorf("failed to get basket: %w", err)
+		return -1, err
 	}
-	
-	if err := json.Unmarshal(data, &basket); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal basket: %w", err)
+
+	basket.Items[itemID]--
+
+	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
+		return -1, err
 	}
-	
-	return &basket, nil
+
+	return basket.Items[itemID], nil
+}
+
+func (bs *BasketService) GetBasket(ctx context.Context, sessionID string) (Basket, error) {
+	basket, err := bs.client.JSONGet(ctx, sessionID).Result()	
+	if err != nil {
+		return Basket{}, err
+	}
+
+	var obj Basket
+	err = json.Unmarshal([]byte(basket), &obj)
+	return obj, err
 }

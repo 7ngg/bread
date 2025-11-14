@@ -2,12 +2,11 @@ package web
 
 import (
 	"database/sql"
-	"html/template"
-	"io"
 	"net/http"
 
 	"github.com/7ngg/bread/internal/db"
 	"github.com/7ngg/bread/internal/services"
+	"github.com/7ngg/bread/internal/web/pages"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/redis/go-redis/v9"
@@ -16,7 +15,6 @@ import (
 )
 
 type WebApp struct {
-	templates      *template.Template
 	db             *db.Queries
 	cache          *redis.Client
 	router         *chi.Mux
@@ -26,14 +24,16 @@ type WebApp struct {
 
 func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
 	queries := db.New(dbConn)
+	productService := services.NewProductService(queries)
+	basketService := services.NewBasketService(redisClient)
 	app := &WebApp{
-		templates:      NewTemplates(),
 		db:             queries,
 		cache:          redisClient,
 		router:         chi.NewRouter(),
-		productService: services.NewProductService(queries),
-		basketService:  services.NewBasketService(redisClient),
+		productService: productService,
+		basketService:  basketService,
 	}
+	pagesHadnler := pages.NewPagesHandler(productService, basketService)
 
 	healthHandler := NewHealthHandler(redisClient, dbConn)
 
@@ -50,8 +50,8 @@ func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
 	// Pages
 	fs := http.FileServer(http.Dir("static"))
 	app.router.Handle("/static/*", http.StripPrefix("/static/", fs))
-	app.router.Get("/", app.RenderIndex)
-	app.router.Post("/basket", app.RenderAddItemToBasket)
+	app.router.Get("/", pagesHadnler.RenderIndex)
+	app.router.Post("/basket", pagesHadnler.RenderPlus)
 
 	return app
 }
@@ -60,6 +60,3 @@ func (handler *WebApp) ListenAndServe(addr string) error {
 	return http.ListenAndServe(addr, handler.router)
 }
 
-func (handler *WebApp) Render(w io.Writer, name string, data any) error {
-	return handler.templates.ExecuteTemplate(w, name, data)
-}

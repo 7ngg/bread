@@ -1,38 +1,16 @@
+@font-face {
+    font-family: "AdwaitaMono-Regular";
+    src: url("/static/fonts/AdwaitaMono-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: "AdwaitaMono-Regular";
+}
+
 .button-base {
     background: none;
     border: none;
-}
-
-@-webkit-keyframes scale-up-br {
-  0% {
-    -webkit-transform: scale(0.5);
-            transform: scale(0.5);
-    -webkit-transform-origin: 100% 100%;
-            transform-origin: 100% 100%;
-  }
-  100% {
-    -webkit-transform: scale(1);
-            transform: scale(1);
-    -webkit-transform-origin: 100% 100%;
-            transform-origin: 100% 100%;
-  }
-}
-@keyframes scale-up-br {
-  0% {
-    -webkit-transform: scale(0.5);
-            transform: scale(0.5);
-    -webkit-transform-origin: 100% 100%;
-            transform-origin: 100% 100%;
-  }
-  100% {
-    -webkit-transform: scale(1);
-            transform: scale(1);
-    -webkit-transform-origin: 100% 100%;
-            transform-origin: 100% 100%;
-  }
-}
-
-.scale-up-br {
-	-webkit-animation: scale-up-br 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
-	        animation: scale-up-br 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+    cursor: pointer;
 }

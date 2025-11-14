@@ -1,5 +1,5 @@
 {{ block "counter" . }}
-<div class="counter">
+<div class="counter" name="counter">
   <button class="button-base counter-item">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
@@ -7,7 +7,7 @@
     </svg>
   </button>
   <span class="counter-value counter-item">0</span>
-  <button class="button-base counter-item">
+  <button class="button-base counter-item" hx-post="/basket" hx-swap="outerHTML">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
       <path d="M5 12h14" />
