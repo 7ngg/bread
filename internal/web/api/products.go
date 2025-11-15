@@ -1,13 +1,24 @@
-package web
+package api
 
 import (
 	"net/http"
 	"strconv"
 
 	"github.com/7ngg/bread/internal/lib"
+	"github.com/7ngg/bread/internal/services"
 )
 
-func (handler *WebApp) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
+type ProductsHandler struct {
+	productService *services.ProductService
+}
+
+func NewProductsHandler(ps *services.ProductService) *ProductsHandler {
+	return &ProductsHandler{
+		productService: ps,
+	}
+}
+
+func (handler *ProductsHandler) GetAllProductsHandler(w http.ResponseWriter, r *http.Request) {
 	params := r.URL.Query()
 	page, _ := strconv.Atoi(params.Get("page"))
 	pageSize, _ := strconv.Atoi(params.Get("page-size"))

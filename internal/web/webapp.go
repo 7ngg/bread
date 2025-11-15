@@ -6,6 +6,7 @@ import (
 
 	"github.com/7ngg/bread/internal/db"
 	"github.com/7ngg/bread/internal/services"
+	"github.com/7ngg/bread/internal/web/api"
 	"github.com/7ngg/bread/internal/web/pages"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -33,21 +34,21 @@ func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
 		productService: productService,
 		basketService:  basketService,
 	}
-	pagesHadnler := pages.NewPagesHandler(productService, basketService)
-
-	healthHandler := NewHealthHandler(redisClient, dbConn)
 
 	app.router.Use(middleware.Logger)
 
 	// Health check endpoint
+	healthHandler := api.NewHealthHandler(redisClient, dbConn)
 	app.router.Get("/api/_health", healthHandler.HealthCheck)
 	app.router.Get("/api/_health/ready", healthHandler.Readiness)
 	app.router.Get("/api/_health/alive", healthHandler.Liveness)
 
 	// Products endpoints
-	app.router.Get("/api/products", app.GetAllProductsHandler)
+	productHandler := api.NewProductsHandler(productService)
+	app.router.Get("/api/products", productHandler.GetAllProductsHandler)
 
 	// Pages
+	pagesHadnler := pages.NewPagesHandler(productService, basketService)
 	fs := http.FileServer(http.Dir("static"))
 	app.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 	app.router.Get("/", pagesHadnler.RenderIndex)
