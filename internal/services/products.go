@@ -15,6 +15,7 @@ type ProductService struct {
 type IProductsGetter interface {
 	GetProducts(context context.Context, params db.GetProductsParams) ([]db.Product, error)
 	ProductsCount(context context.Context) (int64, error)
+	GetProductById(context context.Context, id int32) (db.Product, error)
 }
 
 func NewProductService(pg IProductsGetter) *ProductService {

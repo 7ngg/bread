@@ -1,10 +1,10 @@
 package pages
 
 import (
+	"io"
 	"net/http"
 	"text/template"
 	"time"
-	"io"
 
 	"github.com/7ngg/bread/internal/lib"
 	"github.com/7ngg/bread/internal/services"
@@ -15,7 +15,13 @@ type Templates struct {
 }
 
 func NewTemplates() *template.Template {
-	return template.Must(template.ParseGlob("views/*.html"))
+	funcMap := template.FuncMap{
+		"multiply": func(a float64, b int) float64 {
+			return a * float64(b)
+		},
+	}
+
+	return template.Must(template.New("").Funcs(funcMap).ParseGlob("views/*.html"))
 }
 
 type PagesHandler struct {
@@ -26,9 +32,9 @@ type PagesHandler struct {
 
 func NewPagesHandler(ps *services.ProductService, bs *services.BasketService) *PagesHandler {
 	return &PagesHandler{
-		templates: NewTemplates(),
+		templates:      NewTemplates(),
 		productService: ps,
-		basketService: bs,
+		basketService:  bs,
 	}
 }
 
@@ -52,4 +58,3 @@ func getSessionID(r *http.Request) string {
 	}
 	return c.Value
 }
-

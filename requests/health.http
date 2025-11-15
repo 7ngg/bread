@@ -1,4 +1,10 @@
 @base=http://localhost:42069
 
+### health
+GET {{base}}/api/_health
+
 ### alive
 GET {{base}}/api/_health/alive
+
+### ready
+GET {{base}}/api/_health/ready

@@ -1,0 +1,54 @@
+{{ block "checkout" . }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Bread</title>
+  <link rel="stylesheet" href="/static/styles/global.css" />
+  <link rel="stylesheet" href="/static/styles/index.min.css" />
+  <link rel="stylesheet" href="/static/styles/navbar.min.css" />
+  <link rel="stylesheet" href="/static/styles/checkout.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
+</head>
+
+<body>
+  <header>
+    {{ block "navbar" . }}{{ end }}
+  </header>
+  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="checkout-container">
+      <section class="checkout-header">
+        <h1>Checkout</h1>
+      </section>
+      <div class="checkout-items">
+        <table class="checkout-table">
+          <thead>
+            <th scope="col">Name</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Price</th>
+            <th scope="col">Total</th>
+          </thead>
+          <tbody>
+          {{ range $product := .Items }}
+            <tr class="checkout-item">
+              <td>{{ $product.Name }}</td>
+              <td>{{ $product.Quantity }}</td>
+              <td>&#8380;{{ $product.Price }}</td>
+              <td>&#8380;{{ $product.TotalPrice }}</td>
+            </tr>
+          {{ end }}
+          </tbody>
+        </table>
+      </div>
+      <form class="checkout-actions">
+        <input class="phone-input" placeholder="Phone number"/>
+        <button class="button-base order-btn">
+          Order
+        </button>
+      </form>
+    </div>
+  </main>
+</body>
+
+</html>
+{{ end }}

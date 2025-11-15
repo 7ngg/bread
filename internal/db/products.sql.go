@@ -9,6 +9,26 @@ import (
 	"context"
 )
 
+const getProductById = `-- name: GetProductById :one
+SELECT id, name, ingredients, price, img_url, created_at, updated_at FROM products
+WHERE id=$1
+`
+
+func (q *Queries) GetProductById(ctx context.Context, id int32) (Product, error) {
+	row := q.db.QueryRowContext(ctx, getProductById, id)
+	var i Product
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Ingredients,
+		&i.Price,
+		&i.ImgUrl,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const getProducts = `-- name: GetProducts :many
 SELECT id, name, ingredients, price, img_url, created_at, updated_at FROM products
 ORDER BY name

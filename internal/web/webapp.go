@@ -52,6 +52,7 @@ func NewWebApp(dbConn *sql.DB, redisClient *redis.Client) *WebApp {
 	fs := http.FileServer(http.Dir("static"))
 	app.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 	app.router.Get("/", pagesHadnler.RenderIndex)
+	app.router.Get("/checkout", pagesHadnler.RenderCheckout)
 	app.router.Post("/basket", pagesHadnler.RenderPlus)
 
 	return app
