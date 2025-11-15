@@ -21,38 +21,33 @@ type Basket struct {
 	Items map[int]int `json:"items" redis:"items"`
 }
 
-func (bs *BasketService) AddItemToBasket(ctx context.Context, sessionID string, itemID int) (int, error) {
+func (bs *BasketService) UpdateBasketCount(ctx context.Context, sessionID string, itemID, delta int) (id int, count int, err error) {
 	basket, err := bs.GetBasket(ctx, sessionID)	
 	if err == redis.Nil {
 		basket = Basket{ Items: make(map[int]int) }
 	} else if err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 
-	basket.Items[itemID]++
+	if basket.Items[itemID] <= 0 && delta <= 0 {
+		return itemID, basket.Items[itemID], err
+	}
+
+	basket.Items[itemID] += delta
 
 	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
-		return -1, err
+		return -1, -1, err
 	}
 
-	return basket.Items[itemID], nil
+	return itemID, basket.Items[itemID], nil
 }
 
-func (bs *BasketService) RemoveItemToBasket(ctx context.Context, sessionID string, itemID int) (int, error) {
-	basket, err := bs.GetBasket(ctx, sessionID)	
-	if err == redis.Nil {
-		basket = Basket{ Items: make(map[int]int) }
-	} else if err != nil {
-		return -1, err
-	}
+func (bs *BasketService) AddItemToBasket(ctx context.Context, sessionID string, itemID int) (id int, count int, err error) {
+	return bs.UpdateBasketCount(ctx, sessionID, itemID, 1)
+}
 
-	basket.Items[itemID]--
-
-	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
-		return -1, err
-	}
-
-	return basket.Items[itemID], nil
+func (bs *BasketService) RemoveItemFromBasket(ctx context.Context, sessionID string, itemID int) (id int, count int, err error) {
+	return bs.UpdateBasketCount(ctx, sessionID, itemID, -1)
 }
 
 func (bs *BasketService) GetBasket(ctx context.Context, sessionID string) (Basket, error) {

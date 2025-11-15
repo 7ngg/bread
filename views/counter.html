@@ -1,18 +1,19 @@
 {{ block "counter" . }}
-<div class="counter" name="counter">
-  <button class="button-base counter-item">
+<form class="counter" hx-post="/basket" hx-swap="outerHTML">
+  <input type="hidden" name="product_id" value="{{ .ItemID }}"/>
+  <button type="submit" name="action" value="dec" class="button-base counter-item">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
       <path d="M5 12h14" />
     </svg>
   </button>
-  <span class="counter-value counter-item">0</span>
-  <button class="button-base counter-item" hx-post="/basket" hx-swap="outerHTML">
+  <span class="counter-value counter-item">{{ .Count }}</span>
+  <button type="submit" name="action" value="inc" class="button-base counter-item">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
       <path d="M5 12h14" />
       <path d="M12 5v14" />
     </svg>
   </button>
-</div>
+</form>
 {{ end }}
