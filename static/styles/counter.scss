@@ -11,6 +11,29 @@
   .counter-item {
     justify-self: center;
     align-self: center;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .counter-value {
+    font-size: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 4px;
+    gap: 4px;
+
+    .counter-item {
+      min-width: 40px;
+      min-height: 40px;
+    }
+
+    .counter-value {
+      font-size: 0.9rem;
+    }
   }
 }
 

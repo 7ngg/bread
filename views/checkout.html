@@ -3,6 +3,8 @@
 <html lang="en">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bread</title>
   <link rel="stylesheet" href="/static/styles/global.css" />
   <link rel="stylesheet" href="/static/styles/index.min.css" />
@@ -32,9 +34,9 @@
           {{ range $product := .Items }}
             <tr class="checkout-item">
               <td>{{ $product.Name }}</td>
-              <td>{{ $product.Quantity }}</td>
-              <td>&#8380;{{ $product.Price }}</td>
-              <td>&#8380;{{ $product.TotalPrice }}</td>
+              <td data-label="Amount">{{ $product.Quantity }}</td>
+              <td data-label="Price">&#8380;{{ $product.Price }}</td>
+              <td data-label="Total">&#8380;{{ $product.TotalPrice }}</td>
             </tr>
           {{ end }}
           </tbody>
