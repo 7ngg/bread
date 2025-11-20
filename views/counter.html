@@ -1,6 +1,6 @@
 {{ block "counter" . }}
 <form class="counter" hx-post="/basket" hx-swap="outerHTML">
-  <input type="hidden" name="product_id" value="{{ .ItemID }}"/>
+  <input type="hidden" name="product_id" value="{{ .ID }}"/>
   <button type="submit" name="action" value="dec" class="button-base counter-item">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">

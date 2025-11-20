@@ -6,7 +6,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/7ngg/bread/internal/lib"
 	"github.com/7ngg/bread/internal/services"
 )
 
@@ -42,10 +41,10 @@ func (handler *PagesHandler) Render(w io.Writer, name string, data any) error {
 	return handler.templates.ExecuteTemplate(w, name, data)
 }
 
-func setSessionCookie(w http.ResponseWriter) {
+func setSessionCookie(w http.ResponseWriter, cookie string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "session_id",
-		Value:    lib.RandomString(16),
+		Value:    cookie,
 		SameSite: http.SameSiteLaxMode,
 		Expires:  time.Now().Add(24 * time.Hour),
 	})

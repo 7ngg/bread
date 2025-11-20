@@ -1,17 +1,42 @@
 package pages
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
+
+	"github.com/7ngg/bread/internal/db"
+	"github.com/7ngg/bread/internal/lib"
+	"github.com/7ngg/bread/internal/services"
 )
 
-type NavbarItem struct {
-	Name string
-	Url  string
+type IndexProduct struct {
+	ID          int32
+	Name        string
+	Ingredients string
+	Price       string
+	ImgUrl      sql.NullString
+	Count    int
 }
 
-type IndexProps struct {
-	NavbarItems []NavbarItem
+func NewIndexProduct(product db.Product, quantity int) *IndexProduct {
+	return &IndexProduct{
+		ID: product.ID,
+		Name: product.Name,
+		Ingredients: product.Ingredients,
+		Price: product.Price,
+		ImgUrl: product.ImgUrl,
+		Count: quantity,
+	}
+}
+
+func merge(entities lib.PaginatedList[db.Product], basket services.Basket) []IndexProduct {
+	products := make([]IndexProduct, 0, len(entities.Items))
+	for _, p := range entities.Items {
+		products = append(products, *NewIndexProduct(p, basket.Items[int(p.ID)]))
+	}
+
+	return products
 }
 
 func (handler *PagesHandler) RenderIndex(w http.ResponseWriter, r *http.Request) {
@@ -21,13 +46,17 @@ func (handler *PagesHandler) RenderIndex(w http.ResponseWriter, r *http.Request)
 		http.Error(w, fmt.Sprintf("Error fetching products: %v", err), http.StatusInternalServerError)
 		return
 	}
-	if getSessionID(r) == "" {
-		setSessionCookie(w)
+
+	sessionID := getSessionID(r)
+	if sessionID == "" {
+		setSessionCookie(w, lib.RandomString(16))
 	}
-	err = handler.Render(w, "index.html", products)
+
+	// TODO: err
+	basket, err := handler.basketService.GetBasket(r.Context(), sessionID)
+	err = handler.Render(w, "index.html", merge(products, basket))
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 }
-

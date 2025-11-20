@@ -11,7 +11,7 @@ import (
 )
 
 type CounterProps struct {
-	ItemID int
+	ID int
 	Count  int
 }
 

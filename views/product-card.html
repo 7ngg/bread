@@ -4,7 +4,7 @@
     <img src="{{ .ImgUrl.String }}" alt="{{ .Name }}" />
   </div>
   <div class="product-details">
-    <h1 class="product-title" name="uniwuename">{{ .Name }}</h1>
+    <h1 class="product-title">{{ .Name }}</h1>
     <h4 class="product-price"><span>&#8380;{{ .Price }}</span></h4>
     <section class="product-info">
       <div class="info-item">
@@ -13,17 +13,21 @@
       </div>
     </section>
     <section class="product-actions">
-      <form hx-post="/basket" hx-swap="outerHTML">
-        <input type="hidden" name="product_id" value="{{ .ID }}"/>
-        <button type="submit" class="add-to-cart-button" name="action" value="inc">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-plus-icon lucide-plus">
-            <path d="M5 12h14" />
-            <path d="M12 5v14" />
-          </svg>
-        </button>
-      </form>
+      {{ if eq .Count 0 }}
+        <form hx-post="/basket" hx-swap="outerHTML">
+          <input type="hidden" name="product_id" value="{{ .ID }}"/>
+          <button type="submit" class="add-to-cart-button" name="action" value="inc">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-plus-icon lucide-plus">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+          </button>
+        </form>
+      {{ else }}
+        {{ template "counter" . }}
+      {{ end }}
     </section>
   </div>
 </div>
