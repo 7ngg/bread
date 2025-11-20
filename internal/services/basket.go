@@ -35,6 +35,10 @@ func (bs *BasketService) UpdateBasketCount(ctx context.Context, sessionID string
 
 	basket.Items[itemID] += delta
 
+	if basket.Items[itemID] == 0 {
+		delete(basket.Items, itemID)
+	}
+
 	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
 		return -1, -1, err
 	}
