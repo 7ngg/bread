@@ -39,6 +39,7 @@ jobs:
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd ${{ vars.DEPLOY_PATH }}
           
+          docker compose down
           docker compose up -d
           
           # Clean up old images
@@ -48,4 +49,5 @@ jobs:
           docker compose ps
 
           go build -o bread ./cmd/server/main.go
+          ./bread --config config/stage.yaml
         EOF
