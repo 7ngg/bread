@@ -34,15 +34,15 @@ jobs:
           ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ env.DEPLOY_PATH }}/
 
     - name: Deploy on server
-    run: |
-      ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-        cd ${{ env.DEPLOY_PATH }}
-        
-        docker compose up -d
-        
-        # Clean up old images
-        docker image prune -f
-        
-        # Show status
-        docker compose ps
-      EOF
+      run: |
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd ${{ env.DEPLOY_PATH }}
+          
+          docker compose up -d
+          
+          # Clean up old images
+          docker image prune -f
+          
+          # Show status
+          docker compose ps
+        EOF
