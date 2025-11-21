@@ -29,7 +29,7 @@ jobs:
 
     - name: Copy files to server
       run: |
-        rsync -avz --delete \
+        rsync -avz \
           --exclude '.git' \
           --exclude '.github' \
           ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ env.DEPLOY_PATH }}/
