@@ -32,12 +32,12 @@ jobs:
         rsync -avz \
           --exclude '.git' \
           --exclude '.github' \
-          ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ env.DEPLOY_PATH }}/
+          ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:${{ vars.DEPLOY_PATH }}/
 
     - name: Deploy on server
       run: |
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cd ${{ env.DEPLOY_PATH }}
+          cd ${{ vars.DEPLOY_PATH }}
           
           docker compose up -d
           
