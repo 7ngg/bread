@@ -5,9 +5,10 @@ on:
     branches: [ "master" ]
 
 jobs:
-
-  build:
+  stage:
     runs-on: ubuntu-latest
+    environment: staging
+
     steps:
     - uses: actions/checkout@v4
 
