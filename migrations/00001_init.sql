@@ -1,7 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
 -- Create table: users
--- Create table: users
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     phone TEXT NOT NULL,
