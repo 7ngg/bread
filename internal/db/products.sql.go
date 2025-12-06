@@ -15,7 +15,7 @@ WHERE id=$1
 `
 
 func (q *Queries) GetProductById(ctx context.Context, id int32) (Product, error) {
-	row := q.db.QueryRowContext(ctx, getProductById, id)
+	row := q.db.QueryRow(ctx, getProductById, id)
 	var i Product
 	err := row.Scan(
 		&i.ID,
@@ -41,7 +41,7 @@ type GetProductsParams struct {
 }
 
 func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Product, error) {
-	rows, err := q.db.QueryContext(ctx, getProducts, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, getProducts, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -62,9 +62,6 @@ func (q *Queries) GetProducts(ctx context.Context, arg GetProductsParams) ([]Pro
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -77,7 +74,7 @@ FROM products
 `
 
 func (q *Queries) ProductsCount(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, productsCount)
+	row := q.db.QueryRow(ctx, productsCount)
 	var count int64
 	err := row.Scan(&count)
 	return count, err

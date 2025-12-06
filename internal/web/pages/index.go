@@ -1,7 +1,6 @@
 package pages
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -14,19 +13,19 @@ type IndexProduct struct {
 	ID          int32
 	Name        string
 	Ingredients string
-	Price       string
-	ImgUrl      sql.NullString
-	Count    int
+	Price       float64
+	ImgUrl      string
+	Count       int
 }
 
 func NewIndexProduct(product db.Product, quantity int) *IndexProduct {
 	return &IndexProduct{
-		ID: product.ID,
-		Name: product.Name,
+		ID:          product.ID,
+		Name:        product.Name,
 		Ingredients: product.Ingredients,
-		Price: product.Price,
-		ImgUrl: product.ImgUrl,
-		Count: quantity,
+		Price:       product.Price,
+		ImgUrl:      product.ImgUrl,
+		Count:       quantity,
 	}
 }
 

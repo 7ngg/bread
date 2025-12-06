@@ -27,13 +27,15 @@ type PagesHandler struct {
 	templates      *template.Template
 	productService *services.ProductService
 	basketService  *services.BasketService
+	orderService   *services.OrderService
 }
 
-func NewPagesHandler(ps *services.ProductService, bs *services.BasketService) *PagesHandler {
+func NewPagesHandler(ps *services.ProductService, bs *services.BasketService, os *services.OrderService) *PagesHandler {
 	return &PagesHandler{
 		templates:      NewTemplates(),
 		productService: ps,
 		basketService:  bs,
+		orderService:   os,
 	}
 }
 

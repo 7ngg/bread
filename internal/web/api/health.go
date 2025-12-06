@@ -2,17 +2,17 @@ package api
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 )
 
 type HealthHandler struct {
 	redisClient *redis.Client
-	db          *sql.DB
+	db          *pgxpool.Pool
 }
 
 type DetailedHealthResponse struct {
@@ -21,7 +21,7 @@ type DetailedHealthResponse struct {
 	Timestamp time.Time         `json:"timestamp"`
 }
 
-func NewHealthHandler(redisClient *redis.Client, db *sql.DB) *HealthHandler {
+func NewHealthHandler(redisClient *redis.Client, db *pgxpool.Pool) *HealthHandler {
 	return &HealthHandler{
 		redisClient: redisClient,
 		db:          db,
@@ -45,7 +45,7 @@ func (h *HealthHandler) HealthCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if h.db != nil {
-		if err := h.db.PingContext(ctx); err != nil {
+		if err := h.db.Ping(ctx); err != nil {
 			checks["database"] = "down"
 			allHealthy = false
 		} else {

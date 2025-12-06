@@ -7,3 +7,10 @@ sql:
       go:
         package: "db"
         out: "internal/db"
+        sql_package: "pgx/v5"
+        emit_pointers_for_null_types: true
+        overrides:
+          - db_type: "pg_catalog.numeric"
+            go_type: "float64"
+          - db_type: "text"
+            go_type: "string"

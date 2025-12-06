@@ -5,18 +5,19 @@
 package db
 
 import (
-	"database/sql"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Order struct {
 	ID         int32
 	UserID     int32
-	TotalPrice string
-	CreatedAt  sql.NullTime
+	TotalPrice float64
+	CreatedAt  pgtype.Timestamp
 }
 
 type OrderItem struct {
 	ID        int32
+	OrderID   int32
 	ProductID int32
 	Quantity  int32
 }
@@ -25,15 +26,10 @@ type Product struct {
 	ID          int32
 	Name        string
 	Ingredients string
-	Price       string
-	ImgUrl      sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-type ProductItemsOrder struct {
-	OrderItemID int32
-	OrderID     int32
+	Price       float64
+	ImgUrl      string
+	CreatedAt   pgtype.Timestamp
+	UpdatedAt   pgtype.Timestamp
 }
 
 type User struct {

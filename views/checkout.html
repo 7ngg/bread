@@ -18,7 +18,7 @@
     {{ block "navbar" . }}{{ end }}
   </header>
   <main style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <div class="checkout-container">
+    <form hx-post="/checkout" hx-swap="none" class="checkout-container">
       <section class="checkout-header">
         <h1>Checkout</h1>
       </section>
@@ -37,6 +37,7 @@
               <td data-label="Amount">{{ $product.Quantity }}</td>
               <td data-label="Price">&#8380;{{ $product.Price }}</td>
               <td data-label="Total">&#8380;{{ $product.TotalPrice }}</td>
+              <input type="hidden" name="items[]" value='{ "id": {{ $product.ID }}, "quantity": {{ $product.Quantity }} }'/>
             </tr>
           {{ end }}
           </tbody>
@@ -46,13 +47,14 @@
         <p>Total:</p>
         <span>&#8380;{{ .TotalPrice }}</span>
       </div>
-      <form class="checkout-actions">
-        <input class="phone-input" placeholder="Phone number"/>
-        <button class="button-base order-btn">
+      <div class="checkout-actions">
+        <input class="phone-input" required name="name" placeholder="Name"/>
+        <input class="phone-input" required name="phone_number" placeholder="Phone number"/>
+        <button type="submit" class="button-base order-btn">
           Order
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   </main>
 </body>
 

@@ -1,18 +1,21 @@
 package pages
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
+	"github.com/7ngg/bread/internal/common"
 	"github.com/7ngg/bread/internal/lib"
 	"github.com/7ngg/bread/internal/services"
 	"github.com/redis/go-redis/v9"
 )
 
 type CounterProps struct {
-	ID int
-	Count  int
+	ID    int
+	Count int
 }
 
 var (
@@ -52,16 +55,9 @@ func (handler *PagesHandler) RenderPlus(w http.ResponseWriter, r *http.Request) 
 	handler.Render(w, "counter", CounterProps{itemID, updatedCount})
 }
 
-type CheckoutItem struct {
-	Name       string
-	Quantity   int
-	Price      float64
-	TotalPrice float64
-}
-
 type CheckoutProps struct {
 	TotalPrice float64
-	Items      []CheckoutItem
+	Items      []common.CheckoutItem
 }
 
 func (handler *PagesHandler) RenderCheckout(w http.ResponseWriter, r *http.Request) {
@@ -78,22 +74,56 @@ func (handler *PagesHandler) RenderCheckout(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	props := CheckoutProps{TotalPrice: 0.0, Items: make([]CheckoutItem, 0, len(basket.Items))}
+	props := CheckoutProps{TotalPrice: 0.0, Items: make([]common.CheckoutItem, 0, len(basket.Items))}
 	for id, count := range basket.Items {
 		prod, err := handler.productService.ProductsGetter.GetProductById(r.Context(), int32(id))
 		if err != nil {
 			lib.RespondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		price, _ := strconv.ParseFloat(prod.Price, 8)
-		props.Items = append(props.Items, CheckoutItem{
-			Name: prod.Name,
-			Quantity: count,
-			Price: price,
-			TotalPrice: float64(count) * price,
+		props.Items = append(props.Items, common.CheckoutItem{
+			ID:         prod.ID,
+			Name:       prod.Name,
+			Quantity:   count,
+			Price:      prod.Price,
+			TotalPrice: float64(count) * prod.Price,
 		})
-		props.TotalPrice += float64(count) * price
+		props.TotalPrice += float64(count) * prod.Price
 	}
 
 	handler.Render(w, "checkout", props)
+}
+
+func (handler *PagesHandler) RenderOrder(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	items := r.Form["items[]"]
+	phoneNumber := r.FormValue("phone_number")
+	name := r.FormValue("name")
+
+	fmt.Println(phoneNumber)
+
+	orderItems := make([]services.OrderItem, 0, len(items))
+	for _, item := range items {
+		var d services.OrderItem
+		err = json.Unmarshal([]byte(item), &d)
+		orderItems = append(orderItems, d)
+	}
+
+	order, err := handler.orderService.NewOrder(r.Context(), phoneNumber, name, orderItems)
+	if err != nil {
+		lib.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	response, err := json.Marshal(order)
+	if err != nil {
+		lib.RespondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	w.Write(response)
 }
