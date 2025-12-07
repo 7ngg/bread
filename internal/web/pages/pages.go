@@ -2,6 +2,7 @@ package pages
 
 import (
 	"io"
+	"log/slog"
 	"net/http"
 	"text/template"
 	"time"
@@ -28,9 +29,10 @@ type PagesHandler struct {
 	productService *services.ProductService
 	basketService  *services.BasketService
 	orderService   *services.OrderService
+	logger         *slog.Logger
 }
 
-func NewPagesHandler(ps *services.ProductService, bs *services.BasketService, os *services.OrderService) *PagesHandler {
+func NewPagesHandler(ps *services.ProductService, bs *services.BasketService, os *services.OrderService, logger *slog.Logger) *PagesHandler {
 	return &PagesHandler{
 		templates:      NewTemplates(),
 		productService: ps,

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log/slog"
 
 	"github.com/7ngg/bread/internal/db"
 )
@@ -15,11 +16,13 @@ type IUserRepository interface {
 
 type UserService struct {
 	userRepository IUserRepository
+	logger         *slog.Logger
 }
 
-func NewUserService(userRepository IUserRepository) *UserService {
+func NewUserService(userRepository IUserRepository, logger *slog.Logger) *UserService {
 	return &UserService{
 		userRepository: userRepository,
+		logger:         logger.With("service", "user"),
 	}
 }
 

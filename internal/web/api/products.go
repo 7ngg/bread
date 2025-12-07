@@ -1,6 +1,7 @@
 package api
 
 import (
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -10,11 +11,13 @@ import (
 
 type ProductsHandler struct {
 	productService *services.ProductService
+	logger         *slog.Logger
 }
 
-func NewProductsHandler(ps *services.ProductService) *ProductsHandler {
+func NewProductsHandler(ps *services.ProductService, logger *slog.Logger) *ProductsHandler {
 	return &ProductsHandler{
 		productService: ps,
+		logger:         logger,
 	}
 }
 
@@ -39,4 +42,3 @@ func (handler *ProductsHandler) GetAllProductsHandler(w http.ResponseWriter, r *
 
 	lib.ResponseWithJson(w, http.StatusOK, products)
 }
-

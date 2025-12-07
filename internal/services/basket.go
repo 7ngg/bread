@@ -3,17 +3,20 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 
 	"github.com/redis/go-redis/v9"
 )
 
 type BasketService struct {
 	client *redis.Client
+	logger *slog.Logger
 }
 
-func NewBasketService(client *redis.Client) *BasketService {
+func NewBasketService(client *redis.Client, logger *slog.Logger) *BasketService {
 	return &BasketService{
 		client: client,
+		logger: logger.With("service", "basket"),
 	}
 }
 
@@ -22,10 +25,11 @@ type Basket struct {
 }
 
 func (bs *BasketService) UpdateBasketCount(ctx context.Context, sessionID string, itemID, delta int) (id int, count int, err error) {
-	basket, err := bs.GetBasket(ctx, sessionID)	
+	basket, err := bs.GetBasket(ctx, sessionID)
 	if err == redis.Nil {
-		basket = Basket{ Items: make(map[int]int) }
+		basket = Basket{Items: make(map[int]int)}
 	} else if err != nil {
+		bs.logger.Error("unable to retrieve basket", "sessionID", sessionID, "error", err)
 		return -1, -1, err
 	}
 
@@ -39,7 +43,7 @@ func (bs *BasketService) UpdateBasketCount(ctx context.Context, sessionID string
 		delete(basket.Items, itemID)
 	}
 
-	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err();  err != nil {
+	if err = bs.client.JSONSet(ctx, sessionID, "$", basket).Err(); err != nil {
 		return -1, -1, err
 	}
 
@@ -55,7 +59,7 @@ func (bs *BasketService) RemoveItemFromBasket(ctx context.Context, sessionID str
 }
 
 func (bs *BasketService) GetBasket(ctx context.Context, sessionID string) (Basket, error) {
-	basket, err := bs.client.JSONGet(ctx, sessionID).Result()	
+	basket, err := bs.client.JSONGet(ctx, sessionID).Result()
 	if err != nil {
 		return Basket{}, err
 	}

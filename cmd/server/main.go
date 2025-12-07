@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
+	"os"
 
 	"github.com/7ngg/bread/internal/cache"
 	"github.com/7ngg/bread/internal/config"
@@ -12,6 +14,10 @@ import (
 )
 
 func main() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+	}))
+
 	cfg := config.MustLoad()
 
 	dbConn := initializeDbConnection(cfg.DbConn)
@@ -20,7 +26,7 @@ func main() {
 	redisClient := cache.NewRedisConnection(&cfg.Redis)
 	defer redisClient.Close()
 
-	app := web.NewWebApp(dbConn, redisClient)
+	app := web.NewWebApp(dbConn, redisClient, logger)
 
 	log.Fatal(app.ListenAndServe(fmt.Sprintf(":%d", cfg.Port)))
 }
@@ -33,4 +39,3 @@ func initializeDbConnection(connectionString string) *pgxpool.Pool {
 
 	return conn
 }
-

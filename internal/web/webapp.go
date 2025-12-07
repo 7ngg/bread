@@ -1,6 +1,7 @@
 package web
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/7ngg/bread/internal/db"
@@ -14,33 +15,37 @@ import (
 )
 
 type WebApp struct {
-	router         *chi.Mux
+	router *chi.Mux
+	logger *slog.Logger
 }
 
-func NewWebApp(dbConn *pgxpool.Pool, redisClient *redis.Client) *WebApp {
+func NewWebApp(dbConn *pgxpool.Pool, redisClient *redis.Client, logger *slog.Logger) *WebApp {
 	queries := db.New(dbConn)
-	productService := services.NewProductService(queries)
-	basketService := services.NewBasketService(redisClient)
-	userService := services.NewUserService(queries)
-	orderService := services.NewOrderService(queries, queries, queries, userService)
+	productService := services.NewProductService(queries, logger)
+	basketService := services.NewBasketService(redisClient, logger)
+	userService := services.NewUserService(queries, logger)
+	orderService := services.NewOrderService(queries, queries, queries, userService, logger)
+
 	app := &WebApp{
-		router:         chi.NewRouter(),
+		router: chi.NewRouter(),
+		logger: logger,
 	}
 
 	app.router.Use(middleware.Logger)
+	app.router.Use(middleware.Recoverer)
 
 	// Health check endpoint
-	healthHandler := api.NewHealthHandler(redisClient, dbConn)
+	healthHandler := api.NewHealthHandler(redisClient, dbConn, logger)
 	app.router.Get("/api/_health", healthHandler.HealthCheck)
 	app.router.Get("/api/_health/ready", healthHandler.Readiness)
 	app.router.Get("/api/_health/alive", healthHandler.Liveness)
 
 	// Products endpoints
-	productHandler := api.NewProductsHandler(productService)
+	productHandler := api.NewProductsHandler(productService, logger)
 	app.router.Get("/api/products", productHandler.GetAllProductsHandler)
 
 	// Pages
-	pagesHadnler := pages.NewPagesHandler(productService, basketService, orderService)
+	pagesHadnler := pages.NewPagesHandler(productService, basketService, orderService, logger)
 	fs := http.FileServer(http.Dir("static"))
 	app.router.Handle("/static/*", http.StripPrefix("/static/", fs))
 	app.router.Get("/", pagesHadnler.RenderIndex)

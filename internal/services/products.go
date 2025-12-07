@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"log/slog"
 	"math"
 
 	"github.com/7ngg/bread/internal/db"
@@ -10,6 +11,7 @@ import (
 
 type ProductService struct {
 	ProductsGetter IProductsGetter
+	logger         *slog.Logger
 }
 
 type IProductsGetter interface {
@@ -18,9 +20,10 @@ type IProductsGetter interface {
 	GetProductById(context context.Context, id int32) (db.Product, error)
 }
 
-func NewProductService(pg IProductsGetter) *ProductService {
+func NewProductService(pg IProductsGetter, logger *slog.Logger) *ProductService {
 	return &ProductService{
 		ProductsGetter: pg,
+		logger:         logger.With("service", "product"),
 	}
 }
 

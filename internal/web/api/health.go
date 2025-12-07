@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"time"
 
@@ -13,6 +14,7 @@ import (
 type HealthHandler struct {
 	redisClient *redis.Client
 	db          *pgxpool.Pool
+	logger      *slog.Logger
 }
 
 type DetailedHealthResponse struct {
@@ -21,10 +23,11 @@ type DetailedHealthResponse struct {
 	Timestamp time.Time         `json:"timestamp"`
 }
 
-func NewHealthHandler(redisClient *redis.Client, db *pgxpool.Pool) *HealthHandler {
+func NewHealthHandler(redisClient *redis.Client, db *pgxpool.Pool, logger *slog.Logger) *HealthHandler {
 	return &HealthHandler{
 		redisClient: redisClient,
 		db:          db,
+		logger:      logger,
 	}
 }
 

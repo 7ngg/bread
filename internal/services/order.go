@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
+	"log/slog"
 
 	"github.com/7ngg/bread/internal/db"
 )
@@ -24,6 +25,7 @@ type OrderService struct {
 	productRepository   IProductRepository
 	orderItemRepository IOrderItemRepository
 	userService *UserService
+	logger *slog.Logger
 }
 
 func NewOrderService(
@@ -31,12 +33,14 @@ func NewOrderService(
 	productRepository IProductRepository,
 	orderItemRepository IOrderItemRepository,
 	userService *UserService,
+	logger *slog.Logger,
 ) *OrderService {
 	return &OrderService{
 		orderRepository:     orderRepository,
 		productRepository:   productRepository,
 		orderItemRepository: orderItemRepository,
 		userService: userService,
+		logger: logger.With("service", "order"),
 	}
 }
 
