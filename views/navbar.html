@@ -1,14 +1,16 @@
 {{ block "navbar" . }}
-<nav class="navbar">
-  <a href="/">
-    <h1>BREAD</h1>
+<nav
+  class="flex flex-wrap items-center justify-between border-b border-black mb-10 px-3 min-h-[50px] md:px-4 lg:px-[50px] md:flex-nowrap md:h-[50px]">
+  <a href="/" class="no-underline text-black">
+    <h1 class="text-base my-2 md:text-xl md:my-0 lg:text-2xl">BREAD</h1>
   </a>
-  <!-- <div class="nav-links">
-    <a href="/" class="nav-item">Catalog</a>
-    <a href="/" class="nav-item">Home</a>
+  <!-- <div class="flex-1 flex justify-center text-xl md:text-lg md:justify-start md:w-full md:flex-none md:p-2 md:border-t md:border-[#eee]">
+    <a href="/" class="relative px-2 h-full flex items-center border-r border-[#ccc] last:border-r-0">Catalog</a>
+    <a href="/" class="relative px-2 h-full flex items-center border-r border-[#ccc] last:border-r-0">Home</a>
   </div> -->
-  <div class="members-area" style="display: flex; align-items: center; gap: 10px;">
-    <a href="/" class="nav-item">Orders</a>
+  <div class="flex items-center gap-2 order-2 ml-auto md:order-0 md:ml-0 md:gap-2.5 h-full">
+    <a href="/"
+      class="relative px-2 flex items-center border-r border-[#ccc] last:border-r-0 text-sm md:text-base md:px-2 h-full">Orders</a>
     {{ template "basket" . }}
   </div>
 </nav>

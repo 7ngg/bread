@@ -1,14 +1,18 @@
 {{ block "counter" . }}
-<form class="counter" hx-post="/basket" hx-swap="outerHTML">
-  <input type="hidden" name="product_id" value="{{ .ID }}"/>
-  <button type="submit" name="action" value="dec" class="button-base counter-item">
+<form
+  class="border border-[#ccc] rounded-[5px] grid grid-cols-3 gap-1 sm:gap-[5px] p-1 sm:p-[5px] font-mono transition-all duration-300"
+  hx-post="/basket" hx-swap="outerHTML">
+  <input type="hidden" name="product_id" value="{{ .ID }}" />
+  <button type="submit" name="action" value="dec"
+    class="bg-transparent border-none cursor-pointer touch-manipulation justify-self-center self-center min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
       <path d="M5 12h14" />
     </svg>
   </button>
-  <span class="counter-value counter-item">{{ .Count }}</span>
-  <button type="submit" name="action" value="inc" class="button-base counter-item">
+  <span class="justify-self-center self-center text-sm sm:text-base">{{ .Count }}</span>
+  <button type="submit" name="action" value="inc"
+    class="bg-transparent border-none cursor-pointer touch-manipulation justify-self-center self-center min-w-10 min-h-10 sm:min-w-11 sm:min-h-11 flex items-center justify-center">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
       stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
       <path d="M5 12h14" />

@@ -6,10 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bread</title>
-  <link rel="stylesheet" href="/static/styles/global.css" />
-  <link rel="stylesheet" href="/static/styles/index.min.css" />
-  <link rel="stylesheet" href="/static/styles/navbar.min.css" />
-  <link rel="stylesheet" href="/static/styles/checkout.min.css" />
+  <link rel="stylesheet" href="/static/styles/output.css" />
   <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js"></script>
 </head>
 
@@ -17,40 +14,54 @@
   <header>
     {{ block "navbar" . }}{{ end }}
   </header>
-  <main style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-    <form hx-post="/checkout" hx-swap="none" class="checkout-container">
-      <section class="checkout-header">
-        <h1>Checkout</h1>
+  <main class="flex flex-col items-center justify-center">
+    <form hx-post="/checkout" hx-swap="none"
+      class="w-full sm:w-[95%] md:w-[80%] max-w-[900px] h-auto sm:min-h-[60vh] md:h-[80vh] border-y sm:border border-black sm:rounded-lg text-center p-3 sm:p-4 md:p-5 flex flex-col mx-auto">
+      <section class="border-b border-[#ccc] mb-4">
+        <h1 class="m-0 pb-4 text-[1.3rem] sm:text-[1.5rem] md:text-2xl">Checkout</h1>
       </section>
-      <div class="checkout-items">
-        <table class="checkout-table">
-          <thead>
-            <th scope="col">Name</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Price</th>
-            <th scope="col">Total</th>
+      <div class="flex-1 overflow-y-auto">
+        <table class="w-full border-collapse py-4 md:py-[30px] text-sm md:text-base">
+          <thead class="hidden md:table-header-group">
+            <th scope="col" class="p-3 text-left border-b-2 border-[#ccc] font-bold">Name</th>
+            <th scope="col" class="p-3 text-left border-b-2 border-[#ccc] font-bold">Amount</th>
+            <th scope="col" class="p-3 text-left border-b-2 border-[#ccc] font-bold">Price</th>
+            <th scope="col" class="p-3 text-left border-b-2 border-[#ccc] font-bold">Total</th>
           </thead>
           <tbody>
-          {{ range $product := .Items }}
-            <tr class="checkout-item">
-              <td>{{ $product.Name }}</td>
-              <td data-label="Amount">{{ $product.Quantity }}</td>
-              <td data-label="Price">&#8380;{{ $product.Price }}</td>
-              <td data-label="Total">&#8380;{{ $product.TotalPrice }}</td>
-              <input type="hidden" name="items[]" value='{ "id": {{ $product.ID }}, "quantity": {{ $product.Quantity }} }'/>
+            {{ range $product := .Items }}
+            <tr
+              class="md:table-row block border border-[#ccc] rounded-lg mb-3 p-2 sm:p-3 bg-[#f9f9f9] md:bg-transparent md:border-none md:mb-0 md:p-0">
+              <td
+                class="md:table-cell block p-2 md:p-3 md:border-b md:border-[#eee] text-left text-[0.85rem] sm:text-sm md:text-base md:font-normal font-bold text-base sm:text-[1.1rem] pb-2 md:pb-3 border-b border-[#ddd] mb-2 md:mb-0">
+                {{ $product.Name }}</td>
+              <td data-label="Amount"
+                class="md:table-cell block p-2 md:p-3 border-b-0 md:border-b md:border-[#eee] text-left text-[0.85rem] sm:text-sm md:text-base before:content-[attr(data-label)] before:font-bold before:inline-block before:w-20 before:mr-2 md:before:hidden">
+                {{ $product.Quantity }}</td>
+              <td data-label="Price"
+                class="md:table-cell block p-2 md:p-3 border-b-0 md:border-b md:border-[#eee] text-left text-[0.85rem] sm:text-sm md:text-base before:content-[attr(data-label)] before:font-bold before:inline-block before:w-20 before:mr-2 md:before:hidden">
+                &#8380;{{ $product.Price }}</td>
+              <td data-label="Total"
+                class="md:table-cell block p-2 md:p-3 border-b-0 md:border-b md:border-[#eee] text-left text-[0.85rem] sm:text-sm md:text-base before:content-[attr(data-label)] before:font-bold before:inline-block before:w-20 before:mr-2 md:before:hidden">
+                &#8380;{{ $product.TotalPrice }}</td>
+              <input type="hidden" name="items[]"
+                value='{ "id": {{ $product.ID }}, "quantity": {{ $product.Quantity }} }' />
             </tr>
-          {{ end }}
+            {{ end }}
           </tbody>
         </table>
       </div>
-      <div class="checkout-footer">
+      <div class="border-t border-[#ccc] flex justify-between items-center py-4">
         <p>Total:</p>
         <span>&#8380;{{ .TotalPrice }}</span>
       </div>
-      <div class="checkout-actions">
-        <input class="phone-input" required name="name" placeholder="Name"/>
-        <input class="phone-input" required name="phone_number" placeholder="Phone number"/>
-        <button type="submit" class="button-base order-btn">
+      <div class="flex flex-col md:flex-row gap-3 md:gap-5 mt-5">
+        <input class="flex-1 border border-[#ccc] rounded-[5px] p-3 text-base min-h-11 w-full box-border" required
+          name="name" placeholder="Name" />
+        <input class="flex-1 border border-[#ccc] rounded-[5px] p-3 text-base min-h-11 w-full box-border" required
+          name="phone_number" placeholder="Phone number" />
+        <button type="submit"
+          class="w-full md:w-[30%] md:min-w-[100px] text-white bg-black p-3 rounded-[5px] min-h-11 text-base cursor-pointer border-none touch-manipulation">
           Order
         </button>
       </div>

@@ -1,30 +1,36 @@
 {{ block "product-card" . }}
-<div class="product-card">
-  <div class="product-image">
-    <img src="{{ .ImgUrl }}" alt="{{ .Name }}" />
+<div
+  class="flex flex-col md:flex-row gap-0 md:gap-4 h-auto md:h-[400px] w-full md:w-[700px] max-w-full border border-[#ccc] rounded-lg shadow-sm transition-shadow duration-300 hover:shadow-md">
+  <div class="w-full md:w-[40%] h-[200px] sm:h-[250px] md:h-full">
+    <img src="{{ .ImgUrl }}" alt="{{ .Name }}"
+      class="w-full h-full object-cover rounded-t-lg md:rounded-l-lg md:rounded-tr-none" />
   </div>
-  <div class="product-details">
-    <h1 class="product-title">{{ .Name }}</h1>
-    <h4 class="product-price"><span>&#8380;{{ .Price }}</span></h4>
-    <section class="product-info">
-      <div class="info-item">
+  <div class="flex-1 h-full flex flex-col p-3 sm:p-4 md:p-0 gap-2">
+    <h1 class="w-full relative text-[1.1rem] sm:text-[1.3rem] md:text-2xl border-b pt-4 border-[#ccc] mb-0 sm:mb-2 md:mb-0">
+      {{ .Name }}</h1>
+    <h4 class="text-black/60 p-0 m-0"><span>&#8380;{{ .Price }}</span></h4>
+    <section class="flex-1 pr-0 md:pr-4 m-0 mb-4 md:mb-0">
+      <div
+        class="grid grid-cols-[60px_1fr] sm:grid-cols-[70px_1fr] md:grid-cols-[75px_4fr] gap-2 sm:gap-3 md:gap-4 items-baseline text-[0.85rem] sm:text-sm md:text-base">
         <p>Состав: </p>
         <span>{{ .Ingredients }}</span>
       </div>
     </section>
-    <section class="product-actions">
+    <section class="flex self-start md:self-end pb-0 md:pb-4 pr-0 md:pr-4">
       {{ if eq .Count 0 }}
-        <form hx-post="/basket" hx-swap="outerHTML">
-          <input type="hidden" name="product_id" value="{{ .ID }}"/>
-          <button type="submit" class="add-to-cart-button" name="action" value="inc">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="lucide lucide-plus-icon lucide-plus">
-              <path d="M5 12h14" />
-              <path d="M12 5v14" />
-            </svg>
-          </button>
-        </form>
+      <form hx-post="/basket" hx-swap="outerHTML">
+        <input type="hidden" name="product_id" value="{{ .ID }}" />
+        <button type="submit"
+          class="bg-transparent border-none cursor-pointer min-w-11 min-h-11 flex items-center justify-center"
+          name="action" value="inc">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-plus-icon lucide-plus">
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+        </button>
+      </form>
       {{ else }}
         {{ template "counter" . }}
       {{ end }}
